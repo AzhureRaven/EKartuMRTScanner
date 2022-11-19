@@ -48,7 +48,9 @@ class MainActivity : AppCompatActivity() {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 rute = p2
                 binding.tvPPM.text = "${rutes[rute].ppm.toInt().toRupiah()}/Meter"
-                getDRutes()
+                drutes = Koneksi.getDRutes(rutes[rute])
+                druteAdapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_item, drutes)
+                binding.spnDRute.adapter = druteAdapter
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
@@ -63,12 +65,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         binding.rbMasuk.isChecked = true
-    }
-
-    fun getDRutes(){
-        drutes = Koneksi.getDRutes(rutes[rute])
-        druteAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, drutes)
-        binding.spnDRute.adapter = druteAdapter
     }
 
     fun runScan(str: String){
