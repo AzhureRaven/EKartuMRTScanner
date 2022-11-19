@@ -5,4 +5,8 @@ data class Rute(
     var nama_rute:String,
     var ppm:Double,
     var status_rute:Int
-)
+){
+    override fun toString(): String {
+        return "$nama_rute"
+    }
+}

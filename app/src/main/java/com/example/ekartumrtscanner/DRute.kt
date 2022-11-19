@@ -8,6 +8,9 @@ data class DRute(
     var jarak_next:Int
 ){
     override fun toString(): String {
-        return "$stasiun_ke. ${Koneksi.getStasiun(this)?.nama_stasiun}"
+        return "${Koneksi.getStasiun(this)?.nama_stasiun}"
+    }
+    fun getStasiun():Stasiun?{
+        return Koneksi.getStasiun(this)
     }
 }

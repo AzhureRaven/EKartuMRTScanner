@@ -19,11 +19,9 @@ import kotlin.collections.ArrayList
 object Koneksi {
 
     lateinit var koneksi: Connection
-    val coroutine = CoroutineScope(Dispatchers.IO)
     fun startConnection(){
         val policy = ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        coroutine.launch {
             Class.forName("org.mariadb.jdbc.Driver")
             //Class.forName("com.mysql.jdbc.Driver");
             val ip = IP.getIP() //pake ip laptop sekarang yg ipv4, cari di cmd ipconfig //copy IP.kt di discord, paste ke project sendiri, di gitignore itu biar gk tabrakan ip address masing-masing laptop
@@ -55,7 +53,7 @@ object Koneksi {
                 println(e)
             }
             koneksi = DriverManager.getConnection(jdbcUrl, "root", "")
-        }
+
     }
 
     fun getConnection():Connection{
@@ -157,6 +155,26 @@ object Koneksi {
         return eKartu
     }
 
+    fun getEKartu(id_kartu:Int): EKartu?{
+        val query = getConnection().prepareStatement("select * from e_kartu where id_kartu = ${id_kartu} and status_kartu = 1")
+        val result = query.executeQuery()
+        var eKartu: EKartu? = null
+        while(result.next()){
+            eKartu = EKartu(result.getInt("id_kartu"),
+                result.getString("nama_lengkap"),
+                result.getString("username"),
+                result.getString("password"),
+                result.getString("email"),
+                result.getString("tgl_lahir"),
+                result.getString("kelamin"),
+                result.getString("tgl_register"),
+                result.getDouble("saldo"),
+                result.getInt("status_kartu")
+            )
+        }
+        return eKartu
+    }
+
     fun checkEKartu(username:String, email:String): EKartu?{
         val query = getConnection().prepareStatement("select * from e_kartu where (username = '$username' or email = '$email' )")
         val result = query.executeQuery()
@@ -212,9 +230,89 @@ object Koneksi {
         return eTikets
     }
 
+    fun getETiket(id_tiket:Int): ETiket?{
+        val query = getConnection().prepareStatement("SELECT * from e_tiket where id_tiket = ${id_tiket}")
+        val result = query.executeQuery()
+        var eTiket:ETiket? = null
+        while(result.next()){
+            eTiket = ETiket(
+                result.getInt("id_tiket"),
+                result.getInt("id_kartu"),
+                result.getInt("id_stasiun_awal"),
+                result.getInt("id_stasiun_akhir"),
+                result.getInt("id_rute"),
+                result.getDouble("harga"),
+                result.getString("tgl_cetak"),
+                result.getString("tgl_masuk"),
+                result.getString("tgl_keluar"),
+                result.getInt("mode_tiket"),
+                result.getInt("status_tiket")
+            )
+        }
+        return eTiket
+    }
+
+    fun getETiketBaru(eKartu: EKartu): ETiket?{
+        val query = getConnection().prepareStatement("SELECT * from e_tiket where id_kartu = ${eKartu.id_kartu} and id_stasiun_akhir is null")
+        val result = query.executeQuery()
+        var eTiket:ETiket? = null
+        while(result.next()){
+            eTiket = ETiket(
+                result.getInt("id_tiket"),
+                result.getInt("id_kartu"),
+                result.getInt("id_stasiun_awal"),
+                result.getInt("id_stasiun_akhir"),
+                result.getInt("id_rute"),
+                result.getDouble("harga"),
+                result.getString("tgl_cetak"),
+                result.getString("tgl_masuk"),
+                result.getString("tgl_keluar"),
+                result.getInt("mode_tiket"),
+                result.getInt("status_tiket")
+            )
+        }
+        return eTiket
+    }
+
+    fun ETiketMasuk(eTiket: ETiket){
+        val query = getConnection().prepareStatement("update e_tiket set status_tiket = 3, tgl_masuk = now() where id_tiket = ${eTiket.id_tiket}")
+        val result = query.executeUpdate()
+    }
+    fun ETiketKeluar(eTiket: ETiket){
+        val query = getConnection().prepareStatement("update e_tiket set status_tiket = 0, tgl_keluar = now() where id_tiket = ${eTiket.id_tiket}")
+        val result = query.executeUpdate()
+    }
+    fun ETiketKeluarEkartu(eTiket: ETiket){
+        val query = getConnection().prepareStatement("update e_tiket set status_tiket = 0, tgl_keluar = now(), harga = ${eTiket.harga}, id_stasiun_akhir = ${eTiket.id_stasiun_akhir} where id_tiket = ${eTiket.id_tiket}")
+        val result = query.executeUpdate()
+    }
+
+    fun checkETiketMasuk(eKartu: EKartu):ETiket?{
+        val query = getConnection().prepareStatement("SELECT * from e_tiket where id_kartu = ${eKartu.id_kartu} and status_tiket = 3")
+        val result = query.executeQuery()
+        var eTiket:ETiket? = null
+        while(result.next()){
+            eTiket = ETiket(
+                result.getInt("id_tiket"),
+                result.getInt("id_kartu"),
+                result.getInt("id_stasiun_awal"),
+                result.getInt("id_stasiun_akhir"),
+                result.getInt("id_rute"),
+                result.getDouble("harga"),
+                result.getString("tgl_cetak"),
+                result.getString("tgl_masuk"),
+                result.getString("tgl_keluar"),
+                result.getInt("mode_tiket"),
+                result.getInt("status_tiket")
+            )
+        }
+        return eTiket
+    }
+
+
     fun insertETiket(eTiket: ETiket){
-        val query = getConnection().prepareStatement("insert into e_tiket (id_kartu,id_stasiun_awal,id_stasiun_akhir,id_rute,harga) " +
-                "values ('${eTiket.id_kartu}','${eTiket.id_stasiun_awal}','${eTiket.id_stasiun_akhir}','${eTiket.id_rute}','${eTiket.harga}')")
+        val query = getConnection().prepareStatement("insert into e_tiket (id_kartu,id_stasiun_awal,id_rute,mode_tiket) " +
+                "values ('${eTiket.id_kartu}','${eTiket.id_stasiun_awal}','${eTiket.id_rute}','${eTiket.mode_tiket}')")
         val result = query.executeUpdate()
     }
 
@@ -305,5 +403,19 @@ object Koneksi {
             drutes.add(drute)
         }
         return drutes
+    }
+
+    fun getDRuteAwal(eTiket: ETiket): DRute?{
+        val query = getConnection().prepareStatement("select * from drute where id_rute = ${eTiket.id_rute} and id_stasiun = ${eTiket.id_stasiun_awal}")
+        val result = query.executeQuery()
+        var drute:DRute? = null
+        while(result.next()){
+            drute = DRute(result.getInt("id_rute"),
+                result.getInt("id_stasiun"),
+                result.getInt("stasiun_ke"),
+                result.getInt("jarak_next"),
+            )
+        }
+        return drute
     }
 }
