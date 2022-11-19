@@ -105,6 +105,7 @@ class MainActivity : AppCompatActivity() {
                             if(ekartu?.saldo!! >= harga){
                                 etiket.harga = harga.toDouble()
                                 etiket.id_stasiun_akhir = drutes[drute].id_stasiun
+                                Koneksi.tambahSaldo(ekartu,-harga)
                                 Koneksi.ETiketKeluarEkartu(etiket)
                                 etiket = Koneksi.getETiket(etiket.id_tiket)
                                 binding.tvInfo.text = "Keluar Stasiun ${stasiun?.nama_stasiun}\n"+
