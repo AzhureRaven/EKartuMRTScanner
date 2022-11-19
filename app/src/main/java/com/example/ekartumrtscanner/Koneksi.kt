@@ -310,7 +310,7 @@ object Koneksi {
     }
 
 
-    fun insertETiket(eTiket: ETiket){
+    fun insertETiketEKartuMasuk(eTiket: ETiket){
         val query = getConnection().prepareStatement("insert into e_tiket (id_kartu,id_stasiun_awal,id_rute,mode_tiket) " +
                 "values ('${eTiket.id_kartu}','${eTiket.id_stasiun_awal}','${eTiket.id_rute}','${eTiket.mode_tiket}')")
         val result = query.executeUpdate()

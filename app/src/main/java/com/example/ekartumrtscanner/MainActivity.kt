@@ -15,7 +15,6 @@ import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
-import com.example.ekartumrtscanner.Koneksi.getStasiunAwal
 import com.example.ekartumrtscanner.Koneksi.toRupiah
 import com.example.ekartumrtscanner.databinding.ActivityMainBinding
 import org.json.JSONObject
@@ -85,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                             rutes[rute].id_rute,null,
                             "","","",1,1
                         )
-                        Koneksi.insertETiket(etiket)
+                        Koneksi.insertETiketEKartuMasuk(etiket)
                         etiket = ekartu?.let { Koneksi.getETiketBaru(it) }
                         if (etiket != null) {
                             Koneksi.ETiketMasuk(etiket)
