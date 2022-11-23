@@ -102,7 +102,9 @@ object Koneksi {
     }
 
     fun tambahSaldo(eKartu: EKartu,saldo: Int){
-        val query = getConnection().prepareStatement("update e_kartu set saldo = saldo + $saldo where id_kartu = ${eKartu.id_kartu}")
+        val query = getConnection().prepareStatement("update e_kartu set saldo = saldo + ? where id_kartu = ?")
+        query.setInt(1,saldo)
+        query.setInt(2,eKartu.id_kartu)
         val result = query.executeUpdate()
     }
 
