@@ -36,14 +36,15 @@ CREATE TABLE `drute` (
 insert  into `drute`(`Id_Rute`,`Id_Stasiun`,`Stasiun_Ke`,`Jarak_Next`) values 
 (1,1,2,0),
 (1,3,1,400),
-(2,4,1,6000),
+(2,4,1,600),
 (2,7,2,0),
 (3,2,1,800),
 (3,4,2,700),
 (3,5,3,0),
 (4,1,1,500),
+(4,3,4,0),
 (4,5,2,800),
-(4,6,3,0);
+(4,6,3,200);
 
 /*Table structure for table `e_kartu` */
 
@@ -53,7 +54,7 @@ CREATE TABLE `e_kartu` (
   `Id_Kartu` int(11) NOT NULL AUTO_INCREMENT,
   `Nama_Lengkap` varchar(50) NOT NULL,
   `Username` varchar(50) NOT NULL,
-  `Password` varchar(50) NOT NULL,
+  `Password` varchar(255) NOT NULL,
   `Email` varchar(50) NOT NULL,
   `Tgl_Lahir` datetime NOT NULL,
   `Kelamin` varchar(1) NOT NULL,
@@ -63,13 +64,15 @@ CREATE TABLE `e_kartu` (
   PRIMARY KEY (`Id_Kartu`),
   UNIQUE KEY `uq_username` (`Username`),
   UNIQUE KEY `uq_email` (`Email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `e_kartu` */
 
 insert  into `e_kartu`(`Id_Kartu`,`Nama_Lengkap`,`Username`,`Password`,`Email`,`Tgl_Lahir`,`Kelamin`,`Tgl_Register`,`Saldo`,`Status_Kartu`) values 
-(1,'Abraham Arthur Fendy','ArthurFendy','Fendy','abrahamarthurfendy@gmail.com','2022-11-09 11:28:04','L','2022-11-09 11:28:12',90000.00,1),
-(2,'James Martin Fendy','JamesFendy','Fendy','jamesmartinfendy@gmail.com','2008-07-08 00:00:00','L','2022-11-12 10:11:49',10000.00,1);
+(1,'Abraham Arthur Fendy','ArthurFendy','d09ff7095f292b110574459c147ae602944155e0dc9512542dea2eed8d4a015d','abrahamarthurfendy@gmail.com','2022-11-09 11:28:04','L','2022-11-09 11:28:12',127500.00,1),
+(2,'James Martin Fendy','JamesFendy','d09ff7095f292b110574459c147ae602944155e0dc9512542dea2eed8d4a015d','jamesmartinfendy@gmail.com','2008-07-08 00:00:00','L','2022-11-12 10:11:49',10000.00,1),
+(3,'Kevin Jonathan','Kevin','0e4dd66217fc8d2e298b78c8cd9392870dcd065d0ff675d0edff5bcd227837e9','kevin@gmail.com','2022-10-23 00:00:00','L','2022-11-23 16:25:08',2000000.00,1),
+(4,'Grace Elizabeth Fendy','GraceFendy','d09ff7095f292b110574459c147ae602944155e0dc9512542dea2eed8d4a015d','graceelizabethfendy@gmail.com','2022-10-25 00:00:00','P','2022-11-25 08:06:05',0.00,1);
 
 /*Table structure for table `e_tiket` */
 
@@ -90,19 +93,25 @@ CREATE TABLE `e_tiket` (
   PRIMARY KEY (`Id_Tiket`),
   KEY `Id_Stasiun_Awal` (`Id_Stasiun_Awal`),
   KEY `Id_Kartu` (`Id_Kartu`),
-  KEY `Id_Stasiun_Akhir` (`Id_Stasiun_Akhir`),
   KEY `Id_Rute` (`Id_Rute`),
+  KEY `Id_Stasiun_Akhir` (`Id_Stasiun_Akhir`),
   CONSTRAINT `e_tiket_ibfk_1` FOREIGN KEY (`Id_Kartu`) REFERENCES `e_kartu` (`Id_Kartu`),
   CONSTRAINT `e_tiket_ibfk_2` FOREIGN KEY (`Id_Stasiun_Awal`) REFERENCES `stasiun` (`Id_Stasiun`),
-  CONSTRAINT `e_tiket_ibfk_3` FOREIGN KEY (`Id_Stasiun_Akhir`) REFERENCES `stasiun` (`Id_Stasiun`),
-  CONSTRAINT `e_tiket_ibfk_4` FOREIGN KEY (`Id_Rute`) REFERENCES `rute` (`Id_Rute`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+  CONSTRAINT `e_tiket_ibfk_4` FOREIGN KEY (`Id_Rute`) REFERENCES `rute` (`Id_Rute`),
+  CONSTRAINT `e_tiket_ibfk_5` FOREIGN KEY (`Id_Stasiun_Akhir`) REFERENCES `stasiun` (`Id_Stasiun`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `e_tiket` */
 
 insert  into `e_tiket`(`Id_Tiket`,`Id_Kartu`,`Id_Stasiun_Awal`,`Id_Stasiun_Akhir`,`Id_Rute`,`Harga`,`Tgl_Cetak`,`Tgl_Masuk`,`Tgl_Keluar`,`Mode_Tiket`,`Status_Tiket`) values 
-(1,1,3,1,1,40000.00,'2022-11-13 18:08:34',NULL,NULL,2,1),
-(2,1,1,6,4,65000.00,'2022-11-12 18:10:30','2022-11-16 08:07:14','2022-11-16 09:07:31',2,0);
+(1,1,3,1,1,40000.00,'2022-11-13 18:08:34','2022-11-19 15:37:03','2022-11-19 15:38:07',2,0),
+(2,1,1,6,4,65000.00,'2022-11-12 18:10:30','2022-11-16 08:07:14','2022-11-16 09:07:31',2,0),
+(5,1,5,2,3,112500.00,'2022-11-18 17:43:03',NULL,NULL,2,1),
+(6,1,2,5,3,112500.00,'2022-11-18 19:29:58',NULL,NULL,2,1),
+(10,1,4,2,3,0.00,'2022-11-19 15:55:51','2022-11-19 15:55:51','2022-11-19 15:56:23',1,0),
+(11,1,4,2,3,60000.00,'2022-11-19 16:07:34','2022-11-19 16:07:34','2022-11-19 16:08:29',1,0),
+(12,1,1,6,4,65000.00,'2022-11-20 06:53:28','2022-11-20 06:53:28','2022-11-20 06:54:23',1,0),
+(13,1,3,1,1,40000.00,'2022-11-20 06:57:49','2022-11-20 06:57:49','2022-11-20 06:58:01',1,0);
 
 /*Table structure for table `kereta` */
 
@@ -139,7 +148,7 @@ insert  into `rute`(`Id_Rute`,`Nama_Rute`,`PPM`,`Status_Rute`) values
 (1,'ISTTS-Pakuwon Mall',100.00,1),
 (2,'Purimas-Carnival',80.00,1),
 (3,'Galaxy Mall-City Hall',75.00,1),
-(4,'Pakuwon-Zoo',50.00,1);
+(4,'Pakuwon-ISTTS',50.00,1);
 
 /*Table structure for table `stasiun` */
 
