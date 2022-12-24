@@ -2,7 +2,7 @@ package com.example.ekartumrtscanner
 
 object IP {
     fun getIP():String{
-        return "192.168.100.200"
+        return ""
     }
     //kopas ini ke src
 }
